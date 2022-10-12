@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="./deckBuilding.css">
+    <link rel="stylesheet" href="../commonFrontEnd/navBar.css">
+
+    <title>Deck Building Page</title>
+</head>
+
+<body>
+    <div id="header"></div>
+    <script src="/commonFrontEnd/navBar.js"></script>
+
+    <div class="deck-building-page-container">
+
+        <section class="deck-choosing-interface">
+            <div class="deck-list-wrapper"></div>
+            <div class="interface-btn-wrapper">
+                <button class="btn btn-secondary create-deck-btn" type="button">
+                    <i class="bi bi-plus-circle-dotted"></i> Create Deck
+                </button>
+            </div>
+        </section>
+
+
+        <section class="deck-selection">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Choose a deck
+                </button>
+                <ul class="dropdown-menu deck-menu"></ul>
+            </div>
+            <div class="deckname-wrapper">
+                <div class='ce deck-name' contenteditable="true"></div>
+            </div>
+            <div>
+                <button class="btn btn-secondary edit-btn" type="button">
+                    <i class="bi bi-pencil-square"></i> Edit Deck
+                </button>
+            </div>
+
+        </section>
+
+
+
+        <section class="modal-zone" style="display:none">
+            <div class="modal-wrapper">
+                <div class="modal-image-wrapper"></div>
+            </div>
+        </section>
+
+
+        <section class="deck-builder">
+            <div class="zone-header-wrapper">
+                <div class="my-deck-zone-header">My Deck</div>
+                <div class="my-inventory-zone-header">My Inventory</div>
+            </div>
+
+            <div class="zone-wrapper">
+                <div class="deck-zone"></div>
+                <div class="inventory-zone"></div>
+            </div>
+
+        </section>
+
+
+        <section class="bottom-btn-container">
+            <div>
+                <button class="btn btn-secondary delete-deck-btn" type="button">
+                    <i class="bi bi-trash3"></i> Delete Deck
+                </button>
+            </div>
+            <!-- <div>
+                <button class="btn btn-secondary create-deck-btn" type="button">
+                    <i class="bi bi-plus-circle-dotted"></i> Create Deck
+                </button>
+            </div> -->
+            <div>
+                <button class="btn btn-secondary save-btn" type="button">
+                    <i class="bi bi-box-arrow-down"></i> Save Deck
+                </button>
+            </div>
+        </section>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+        crossorigin="anonymous"></script>
+    <script src="./deckBuilding.js"></script>
+</body>
+
+</html>

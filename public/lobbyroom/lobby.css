@@ -1,0 +1,246 @@
+body {
+    margin: 0;
+}
+
+.lobbybgimg {
+    width: 100vw;
+    height: 100vh;
+    opacity: 0.2;
+    position: relative;
+    top: 0;
+    object-fit: cover;
+}
+
+.lobbybgimg2 {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    opacity: 0.3;
+}
+
+
+/* navigation bar */
+.topnav {
+    overflow: hidden;
+    background-color: rgb(129, 77, 20);
+}
+
+.topnav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.topnav a.active {
+    background-color: rgb(216, 143, 49);
+    color: black;
+}
+
+.menu-bar {
+    width: 100vw;
+    /* height: 10vh; */
+}
+
+.outer {
+    display: flex;
+    flex-wrap: wrap;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.left {
+    width: 70vw;
+    height: 97vh;
+    padding: 10px;
+}
+
+.innerleft {
+    display: flex;
+    flex-wrap: wrap;
+    height: 10vh;
+    margin: 20px;
+}
+
+.right {
+    background-color: rgba(216, 194, 153, 0.699);
+    width: 23vw;
+    height: 96vh;
+    padding: 10px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* lobby area */
+.currentuser {
+    font-weight: normal;
+}
+
+.rooms,
+.liverooms {
+    display: flex;
+    flex-wrap: wrap;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin: 10px;
+    width: 88%;
+}
+
+.rooms {
+    margin-top: 5vh;
+    height: 45%;
+}
+
+.liverooms {
+    height: 25%;
+    border-top: 5px solid rgb(206, 151, 119);
+}
+
+.singleroom,
+.myroom,
+.liveroom {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    margin: 20px;
+    width: 150px;
+    height: 100px;
+    border-radius: 35px;
+    margin: 10px;
+}
+
+.singleroom {
+    background-color: rgba(248, 238, 238, 0.829);
+}
+
+.myroom {
+    background-color: rgba(96, 96, 96, 0.88);
+}
+
+.liveroom {
+    background-color: rgba(189, 178, 118, 0.815);
+
+}
+
+.myroom p,
+.singleroom p {
+    padding: 20px 0;
+}
+
+.quitroom {
+    margin: 20px;
+}
+
+.myroom p {
+    color: whitesmoke;
+}
+
+.singleroom p {
+    color: black;
+}
+
+.hostarea {
+    font-weight: normal;
+    word-wrap: break-word;
+}
+
+.host {
+    font-weight: bold;
+    word-wrap: break-word;
+}
+
+.joinroombutton,
+.quitroombutton {
+    width: 100%;
+}
+
+/* buttons */
+.joinroom,
+.quitroom,
+.joinliveroom {
+    background-color: rgba(189, 134, 63, 0.637);
+    color: rgb(255, 255, 255);
+    border: white 3px;
+    border-radius: 15px;
+    margin: 10px;
+    padding: 5px;
+    font-size: 16px;
+}
+
+.joinroom {
+    color: rgb(2, 2, 2);
+}
+
+.secinnerleft button,
+p,
+input {
+    margin: 0 10px;
+
+}
+
+.secinnerleft button {
+    background-color: rgba(216, 144, 49, 0.678);
+    color: rgba(0, 0, 0, 0.582);
+    border-radius: 15px;
+    margin: 10px;
+    padding: 10px;
+    font-size: 20px;
+    color: rgb(71, 66, 66);
+}
+
+.secinnerleft {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100vw;
+    height: auto;
+}
+
+/* for each user in online users */
+.eachuser {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 10px 0px;
+    align-items: center;
+}
+
+.onlineusers {
+    font-size: 16px;
+}
+
+/* the rest here */
+.watchcommercial {
+    display: flex;
+    font-size: 20px;
+    word-break: normal;
+    width: 250px;
+    height: 75px;
+    background-color: black;
+    color: white;
+    margin: 10px;
+    border-radius: 25px;
+    position: fixed;
+    top: 7vh;
+    left: 38vw;
+    border: 3px grey;
+}
+
+.pointgif {
+    margin: 10px;
+}
+
+.pointgif {
+    width: 40px;
+    height: 30px;
+}

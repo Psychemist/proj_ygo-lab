@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commercial</title>
+    <style>
+        .quit {
+            padding: 10px;
+            font-size: 23px;
+            margin: 10px;
+            position: absolute;
+            z-index: 0;
+            right: 10px;
+            top: 10px;
+        }
+
+        .outer {
+            position: relative;
+            width: 100vw;
+            height: 80vh;
+        }
+
+        img {
+            top: 15vh;
+            width: 100vw;
+            height: 80vh;
+            object-fit: cover;
+        }
+
+        p {
+            padding: 0 15px;
+            margin: 0 20px;
+        }
+
+        .speech {
+            font-size: 30px;
+        }
+
+        .top {
+            width: 100vw;
+            height: 10vh;
+        }
+
+        .awardspeech,
+        .speech {
+            padding-left: 15px;
+        }
+
+        .awardspeech,
+        .commercialcount {
+            font-weight: bold;
+            font-size: 28px;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top">
+        <button type="button" class="quit"> X </button>
+        <p class="speech">You have watched commercial for <span class="commercialcount"></span> seconds !</p>
+        <p>Watch > 10 sec to earn $300 more!</p>
+        <p class="awardspeech">You've earned <span class="amountearned">0</span>!</p>
+    </div>
+    <div class="outer">
+        <img src="commercials/1.gif" class="img" />
+    </div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io.connect();
+        let count = 0;
+        let amount = 0;
+        let comcount = document.querySelector('.commercialcount');
+        let earnedamount = document.querySelector('.amountearned');
+        let quit = document.querySelector('.quit')
+        let user = { 'username': null, 'userid': null }
+        let img = document.querySelector('.img')
+        console.log(img.src, '-img src')
+        let randnum;
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+        randnum = getRandomInt(5)
+        console.log('randnum', randnum)
+        img.src = `commercials/${randnum + 1}.gif`
+
+        //windows onload
+        window.onload = async () => {
+            await fetchuser();
+            console.log('loading')
+        }
+
+        //joinedroom user info
+        async function fetchuser() {
+            const respond = await fetch('/joinedcommercial', {
+                method: 'POST'
+            })
+            if (respond.status === 200) {
+                const data = await respond.json()
+                console.log(data, '-data')
+                user['username'] = data['username'];
+                user['userid'] = data['userid'];
+            }
+        }
+
+        function startCount() {
+            return new Promise(function resandrej(resolve, reject) {
+                setInterval(function () {
+                    count += 1;
+                    comcount.innerHTML = count
+                    resolve();
+                    if (count == 6) {
+                        amount += 500;
+                        earnedamount.innerHTML = amount;
+                        console.log(earnedamount, '-earnedamount')
+                    } else if (count == 11) {
+                        amount += 300;
+                        earnedamount.innerHTML = amount;
+                        console.log(earnedamount, '-earnedamount')
+                    }
+                }, 1000);
+            }
+            )
+        };
+        if (count < 300) {
+            startCount()
+        }
+
+
+        // add money if count > 5 etc
+
+
+        console.log(amount, ' - amount')
+        //fetch api back if amount > 0
+        quit.addEventListener('click', async function () {
+            console.log('presssed quit')
+            if (amount > 0) {
+                await fetch('/earnedfromcommercial', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        'username': user['username'],
+                        'userid': user['userid'],
+                        amount
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    }
+                })
+            }
+        })
+
+
+
+        //if user press quit
+        socket.on('redirect', function (destination) {
+            window.location.href = destination
+        })
+
+    </script>
+</body>
+
+</html>

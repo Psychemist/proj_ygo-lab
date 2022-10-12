@@ -1,0 +1,265 @@
+body {
+    margin: 0;
+    background-color: black;
+}
+
+.lobbybgimg {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    opacity: 0.5;
+}
+
+/* the rest below */
+.quit,
+.confirmicon {
+    padding: 10px;
+    font-size: 23px;
+    margin: 10px;
+    background-color: rgba(216, 144, 49, 0.678);
+    border-radius: 15px;
+    color: rgb(71, 66, 66);
+}
+
+.quit {
+    position: absolute;
+    z-index: 1;
+    right: 10px;
+    top: 10px;
+
+}
+
+
+.outer {
+    display: flex;
+}
+
+.left {
+    width: 0;
+    height: 0;
+    position: relative;
+}
+
+.right {
+    width: 0;
+    height: 0;
+}
+
+/* this is for chatbox */
+.scroll {
+    display: block;
+    box-sizing: border-box;
+    margin: 4px, 4px;
+    padding: 4px;
+    background-color: rgba(216, 208, 170, 0.555);
+    width: 100%;
+    height: 83vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-align: justify;
+    /* position: relative; */
+}
+
+.scroll>.opponenttxt,
+.scroll>.mytxt,
+.scroll>.mynonhosttxt {
+    /* position: absolute; */
+    margin: 0;
+    padding: 10px;
+    font-size: 25px;
+}
+
+.scroll>.opponenttxt {
+    text-align: start;
+    color: rgb(105, 105, 98)
+}
+
+.scroll>.mytxt {
+    text-align: end;
+    padding-right: 10px;
+}
+
+.scroll>.mynonhosttxt {
+    text-align: start;
+
+    color: rgb(160, 160, 157)
+}
+
+.upperchathead {
+    box-sizing: border-box;
+    width: 100%;
+    height: 6vh;
+    justify-content: flex-start;
+    padding: 10px 20px;
+    background-color: rgba(129, 107, 81, 0.741);
+    color: black;
+    font-size: 26px;
+    padding-left: 4vw;
+}
+
+.inputtxt {
+    box-sizing: border-box;
+    position: absolute;
+    width: 80%;
+    height: 30px;
+    margin: 10px;
+    bottom: 10px;
+}
+
+.sendtxt {
+    background-color: rgba(216, 144, 49, 0.678);
+    border-radius: 15px;
+    color: rgb(71, 66, 66);
+    margin: 5px;
+    padding: 10px;
+    font-size: 20px;
+    position: absolute;
+    bottom: 0vh;
+    right: 0;
+    z-index: 1;
+}
+
+.welcomeuser,
+.participants,
+.right>h4 {
+    margin: 10px;
+}
+
+.innerright {
+    margin: 20px;
+}
+
+/* for icon picking */
+.foranimationonly2 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+}
+
+.wholewidth {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+}
+
+.pickedimgsec {
+    width: 100vw;
+    display: flex;
+}
+
+.pickedimg,
+.playericon {
+    margin: 30px;
+    width: 10vw;
+    height: 10vw;
+    border-radius: 50px;
+}
+
+.selecticonforuser {
+    color: white;
+    text-align: center;
+}
+
+/* the rest here */
+.playericon {
+    margin: 0;
+    width: 5vw;
+    height: 5vw;
+    z-index: 0;
+}
+
+.opponenticon {
+    position: absolute;
+    width: 2vw;
+    height: 2vw;
+    margin-left: 1vw;
+    border-radius: 50px;
+    top: 10px;
+    z-index: 0;
+}
+
+.outerofopponent {
+    display: flex;
+}
+
+.mydeck,
+.hisdeck,
+.tradedeck {
+    display: flex;
+    box-sizing: border-box;
+    width: 150px;
+    height: 60px;
+    font-size: 28px;
+    background-color: rgba(193, 209, 219, 0.534);
+    margin: 5px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 25px;
+}
+
+.mydeck,
+.tradedeck {
+    opacity: 0.2;
+}
+
+.hisdeck {
+    opacity: 1;
+}
+
+
+.selectdecksec {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* this is for deck cards*/
+
+
+.card,
+.all-card {
+    margin: 20px;
+    box-sizing: border-box;
+    width: 220px;
+    height: 300px;
+}
+
+.decks {
+    width: 65vw;
+    height: 65vh;
+    background-color: rgba(197, 206, 205, 0.397);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.decksec {
+    display: flex;
+    width: 68vh;
+    margin: 10px;
+}
+
+.innerdecksec {
+    width: 100%;
+    height: 15%;
+    background-color: rgba(223, 247, 247, 0.397);
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.innerdecksec button {
+    margin: 10px;
+    padding: 10px;
+    font-size: 20px;
+}
+
+.lowerinnerdecksec {
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 100%;
+    height: 85%;
+}

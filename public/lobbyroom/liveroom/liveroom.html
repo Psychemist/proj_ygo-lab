@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./liveroom.css">
+    <title>Live room</title>
+</head>
+
+<body>
+    <button type="button" class="quit">Quit</button>
+    <div class="foranimationonly2">
+    </div>
+    <div class="outer">
+        <div class="left">
+            <div class="outerofopponent">
+                <!-- <img class="opponenticon" src="../icons/default.png"> -->
+                <div class="upperchathead"></div>
+            </div>
+            <div class="innerleft">
+            </div>
+        </div>
+        <div class="right">
+            <h1 class="welcomeuser"></h1>
+            <h4>Participants: <span class="participants">0</span></h4>
+            <div class="innerright">
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io.connect();
+    let quit = document.querySelector('.quit')
+    let opponents = []; //every other users
+    let host;
+    let currentuser = { 'username': null, 'id': null, 'ishost': null };
+    let others = [];
+    // pick icon
+    let divforanimationonly2 = document.querySelector('.foranimationonly2')
+    let randintlst = []
+    let selectedrandintlst = []
+    let selectedicon = '../icons/default.png';
+    for (let i = 3; i < 26; i++) {
+        randintlst.push(i)
+    }
+    let selectedconfirm;
+    let upperchat = document.querySelector('.upperchathead');
+    let opponenticon = document.querySelector('.opponenticon')
+    let leftsec = document.querySelector('.left');
+    let rightsec = document.querySelector('.right');
+    let participants = document.querySelector('.participants')
+    // chat area
+    let submit;
+    let inputtxt;
+    // deck/cards
+    let decknames;
+    let opponentdeckwithitems;
+    let cards;
+    let par = 0;
+
+    window.onload = async () => {
+        await fetchusers();
+        //[back here][ask] => if this needs await
+    }
+    async function fetchusers() {
+        const respond = await fetch('/joinliveroomsync', {
+            method: 'POST'
+        })
+        if (respond.status === 200) {
+            const data = await respond.json()
+            currentuser['username'] = data['username'];
+            currentuser['id'] = data['id'];
+            host = data['liveroomhost'];
+            currentuser['ishost'] = data['ishost'];
+            cards = data['cards'];
+            decknames = data['decknames'];
+            opponentdeckwithitems = data['opponentdeckwithitems'];
+            if (currentuser['ishost']) {
+                letpickicon()
+            } else if (!currentuser['ishost']) {
+                par = data['participants']
+                participants.innerHTML = par;
+                console.log('---line 85 --- ', par)
+                cannotconfirmiconuser()
+            }
+        }
+    }
+
+    // pick icon
+    function letpickicon() {
+        //random selecting img
+        for (let i = 0; i < 4; i++) {
+            let randomnumber = getRandomInt(randintlst.length)
+            selectedrandintlst.push(randintlst[randomnumber])
+            let selected = randintlst.indexOf(randintlst[randomnumber])
+            randintlst.splice(selected, 1)
+        }
+        divforanimationonly2.innerHTML += `<div class="pickimgsec">
+                <h1 class="selecticonforuser"> Select Icon! </h1>
+            <img class="pickedimg" index="${selectedrandintlst[0]}" src="../icons/${selectedrandintlst[0]}.jpg" />
+            <img class="pickedimg" index="${selectedrandintlst[1]}" src="../icons/${selectedrandintlst[1]}.jpg" />
+            <img class="pickedimg" index="${selectedrandintlst[2]}" src="../icons/${selectedrandintlst[2]}.jpg" />
+            <img class="pickedimg" index="${selectedrandintlst[3]}" src="../icons/${selectedrandintlst[3]}.jpg" />
+        </div>
+        <div class="wholewidth">
+            <button type="button" class="confirmicon">Confirm</button>
+        </div>`
+        let confirmicon = document.querySelector('.confirmicon')
+        let pickedimgs = document.querySelectorAll('.pickedimg')
+        for (let img of pickedimgs) {
+            img.addEventListener('click', function (event) {
+                let element = event.target;
+                let imgindex = element.getAttribute('index');
+                selectedicon = imgindex;
+                //set all image shadow to 0 before
+                for (let img of pickedimgs) {
+                    img.style.boxShadow = ''
+                }
+                img.style.boxShadow = "0px 0px 73px 27px rgba(191,191,191,1)";
+                //when clicked => select img, other imgs style = ''
+                selectedconfirm = document.querySelector('.confirmicon')
+                confirmicontouser()
+            })
+        }
+    }
+    //max dont count => e.g. 0-6 6 dont count
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+    }
+
+    function confirmicontouser() {
+        selectedconfirm.addEventListener('click', async function () {
+            divforanimationonly2.innerHTML = ''
+            divforanimationonly2.style.width = 0;
+            divforanimationonly2.style.height = 0;
+            document.body.style.backgroundColor = "rgba(206, 179, 154, 0.26)";
+            const respond = await fetch('/gethosticon', {
+                method: 'POST',
+                body: JSON.stringify({
+                    selectedicon: selectedicon,
+                    host
+                }),
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8'
+                }
+            })
+            console.log('line 138 - here - ', selectedicon)
+            //[start room activites]
+            innerleft = document.querySelector('.innerleft')
+            innerright = document.querySelector('.innerright')
+            addinnerrighthtml()
+            hisdeck.innerHTML = await assignSelect(decknames['opponentdecks'])
+            checkHisDeck()
+            showallcards(cards['opponentcards']) //default show his cards
+            addinnerrighthtmlforhost()
+            sendText()
+        })
+
+    }
+    // when nonhost user gets in room
+    async function cannotconfirmiconuser() {
+        divforanimationonly2.innerHTML = ''
+        divforanimationonly2.style.width = 0;
+        divforanimationonly2.style.height = 0;
+        document.body.style.backgroundColor = "whitesmoke";
+        //[start room activites]
+        innerleft = document.querySelector('.innerleft')
+        innerright = document.querySelector('.innerright')
+        addinnerrighthtml()
+
+        hisdeck.innerHTML = await assignSelect(decknames['opponentdecks'])
+        checkHisDeck()
+        showallcards(cards['opponentcards']) //default show his cards
+        sendText()
+    }
+
+
+    function addinnerrighthtml() {
+        //assign items inside innerHTML at beginning after room starts
+        innerright.innerHTML +=
+            `<div class="decksec">
+                    <div class="selectdecksec">
+                    </div>
+                    <div class="hisdeck">
+                        <p>His deck</p>
+                    </div>
+                    <div class="selectdecksec">
+                        <select name="selecthisdeck">
+                            <option value="All">All</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="decks">
+                </div>`
+        innerleft.innerHTML += `            
+            <div class="scroll">
+            </div>
+            <input type="text" class="inputtxt" name="inputtxt">
+            <button type="button" class="sendtxt">Send</button>`
+        chatarea = document.querySelector('.scroll')
+        submit = document.querySelector('.sendtxt')
+        inputtxt = document.querySelector('.inputtxt')
+        decksec = document.querySelector('.decks')
+        hisdeckbutton = document.querySelector('.hisdeck')
+        hisdeck = document.querySelector('[name="selecthisdeck"]')
+        welcomeuser = document.querySelector('.welcomeuser');
+        welcomeuser.innerHTML = `<h1>Welcome, ${currentuser['username']}</h1>`
+
+        upperchat.innerHTML = `${host}'s live room`
+        leftsec.style.width = "30%";
+        leftsec.style.height = "97vh";
+        rightsec.style.width = "70%";
+        rightsec.style.height = "100vh";
+    }
+
+    function addinnerrighthtmlforhost() {
+        welcomeuser.innerHTML = `<h1>Welcome, ${currentuser['username']} <img class="playericon" index="${selectedicon}" src="../icons/${selectedicon}.jpg" /></h1>`
+        hisdeckbutton.innerHTML = `<p>My deck</p>`
+    }
+
+    function checkHisDeck() {
+        hisdeckbutton.addEventListener('click', function () {
+            let value = hisdeck.options[hisdeck.selectedIndex].value;
+            if (value == 'All') {
+                showallcards(cards['opponentcards'])
+            } else {
+                showallcards(opponentdeckwithitems[value])
+            }
+        })
+    }
+    function showallcards(array) {
+        decksec.innerHTML = ''
+        for (let c of array) {
+            decksec.innerHTML += `<img src="../../cardAssets/${c}" class="card" >`
+        }
+    }
+    function assignSelect(deckarray) {
+        let decknameinnerH = '<option value="All">All</option>'
+        for (let dname of deckarray) {
+            decknameinnerH += `<option value="${dname}">${dname}</option>`
+        }
+        return decknameinnerH
+    }
+
+
+    // send text
+    function sendText() {
+        submit.addEventListener('click', async function (event) {
+            console.log('submitted')
+            let currenttxt = inputtxt.value //text that user input
+            const respond = await fetch('/liveroomchat', {
+                method: 'POST',
+                body: JSON.stringify({
+                    host,
+                    'msg': currenttxt,
+                    'currentuser': currentuser['username']
+                }),
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8'
+                }
+            })
+
+            if (respond.ok) {
+                //[resume below]
+                // chatarea.innerHTML += `<p class="opponenttxt">${currentuser['username']}:${currenttxt}</p><br>`
+                if (!currentuser['ishost']) {
+                    console.log('run here too 1')
+                    chatarea.innerHTML += `<p class="opponenttxt">${currentuser['username']}:${currenttxt}</p><br>`
+                    currenttxt = ''
+                } else if (currentuser['ishost']) {
+                    console.log('run here too 2')
+                    chatarea.innerHTML += `<p class="mytxt">${currentuser['username']}:${currenttxt}</p><br>`
+                    currenttxt = ''
+                }
+
+            }
+        })
+    }
+
+
+    //receive text
+    function receiveText(msg, usn) {
+        // chatarea.innerHTML += `<p class="opponenttxt">${usn}:${msg}</p><br>`
+        //[resume below]
+        if (host != usn) {
+            console.log('line 288')
+            chatarea.innerHTML += `<p class="mynonhosttxt">${usn}:${msg}</p><br>`
+        } else if (host == usn) {
+            console.log('line 291')
+            chatarea.innerHTML += `<p class="mytxt">${usn}:${msg}</p><br>`
+        }
+    }
+
+    // end room
+    quit.addEventListener('click', function () {
+        if (currentuser['username'] == host) {
+            quitownroom()
+        } else {
+            quitroom()
+        }
+        console.log(host, '-host')
+
+    })
+
+    // for host quit room
+    async function quitownroom() {
+        const respond = await fetch('/endliveroom', {
+            method: 'POST',
+            body: JSON.stringify({
+                host: host
+            }),
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        })
+    }
+    // for others quit room
+    async function quitroom() {
+        participants.innerHTML = par
+        const respond = await fetch('/quitliveroom', {
+            method: 'POST',
+            body: JSON.stringify({
+                host: host,
+                participants: par
+            }),
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        })
+    }
+    socket.on('gethosticon', (data) => {
+        opponenticon.src = `../icons/${data}.jpg`
+    })
+    socket.on('redirect', function (destination) {
+        window.location.href = destination
+    })
+    socket.on('personsendmsg', (data, usn) => {
+        console.log('line 333')
+        receiveText(data, usn)
+
+    })
+    socket.on('participantschanged', (data) => {
+        par -= 1
+        participants.innerHTML = par
+        console.log('line 346 - par - ', par)
+    })
+    socket.on('participantsadded', () => {
+        par += 1
+        participants.innerHTML = par
+        console.log('line 346 - par - ', par)
+    })
+
+
+</script>
+
+</html>

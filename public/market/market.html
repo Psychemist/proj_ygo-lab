@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YGO deck market</title>
+    <script src="https://js.stripe.com/v3/" async></script>
+    <link rel="stylesheet" href="./marketStyle.css">
+    <link rel="stylesheet" href="../commonFrontEnd/navBar.css">
+</head>
+
+<body>
+
+
+
+    <div id="header"></div>
+    <!-- <script src="/commonFrontEnd/navBar.js"></script> -->
+
+    <div id="infoContainer">
+        <div id="infoTitle">
+            YuGiOh cards market
+            <!-- YuGiOh cards market -->
+        </div>
+        <div id="cashTitle">You now have (
+
+            <div id="moneyOwned"> </div>
+            ) dollars
+            <div id="getMoreCash">
+                > Get More < </div>
+            </div>
+
+
+
+            <div id="countDown">
+                Timer
+            </div>
+
+        </div>
+
+
+
+        <div class="specialSale">
+
+            <!-- <div class="marketCards">
+        </div>
+        <div class="specialSpan"></div>
+ -->
+
+        </div>
+
+        <div class="market">
+            <!-- <div class="marketCards">
+        </div> -->
+
+        </div>
+
+        <div id="announcementDiv">
+            announcementDiv
+        </div>
+
+        <div id="getCashDiv">
+            <div id="closeCashDiv"></div>
+            <div id="getCashDivContent">
+                <div id="getCashTitle"> ⬇️ Get more cash here ⬇️</div>
+                <div id="getCashMethods">
+                    <div id="theCatContainer">Pet the cat
+                        <div id="theCat">
+                            <div>
+                                You can get $10 each time
+                            </div>
+                            <div>
+                                <!-- You have owned $0 from petting the cat. -->
+                            </div>
+                            <img src="../assets/theCat.png" id="catImg">
+                        </div>
+
+                    </div>
+                    <div id="onlinePaymentContainer">
+                        <!-- <div>Online Payment</div> -->
+                        <div>14 HKD for 10000 cash</div>
+                        <div id="onlinePayment">
+                            <!-- The Online Payment -->
+
+                            <!-- <button id="click">
+                                Start the payment
+                            </button> -->
+
+                            <form id="payment-form">
+                                <div id="payment-element">
+                                    <!--Stripe.js injects the Payment Element-->
+                                </div>
+                                <button id="submit">
+                                    <div class="spinner hidden" id="spinner"></div>
+                                    <span id="button-text">Pay now</span>
+                                </button>
+                                <div id="payment-message" class="hidden"></div>
+                            </form>
+
+
+
+
+
+
+
+
+
+                        </div>
+                        <!-- <div>method3</div> -->
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="getData.js"></script>
+        <script src="marketScript.js"></script>
+        <!-- <script src="marketButton.js"></script> -->
+        <script>
+
+
+
+            // let btn = document.querySelector('#click')
+            // btn.addEventListener('click', 
+
+            async function onlinePayment() {
+                const stripe = Stripe("pk_test_51LjuemCplm3N815QCqScEoKpqpIuZXPQ9jXq5lyvFoUNuY457a7HWDl0T2A5JAVlDXqFaWDhQ3pOF2Kgk1D4LHzB000uKNZS6x");
+
+
+
+                const items = [{ id: "prod_MTLUbaV8FOwxEo" }];
+
+                let elements;
+
+                initialize();
+                checkStatus();
+
+                document
+                    .querySelector("#payment-form")
+                    .addEventListener("submit", handleSubmit);
+
+                // Fetches a payment intent and captures the client secret
+                async function initialize() {
+                    const response = await fetch("/create-payment-intent", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ items }),
+                    });
+                    const { clientSecret } = await response.json();
+
+                    const appearance = {
+                        theme: 'stripe',
+                    };
+                    elements = stripe.elements({ appearance, clientSecret });
+
+                    const paymentElement = elements.create("payment");
+                    paymentElement.mount("#payment-element");
+                }
+
+                async function handleSubmit(e) {
+                    e.preventDefault();
+                    setLoading(true);
+
+                    const { error } = await stripe.confirmPayment({
+                        elements,
+                        confirmParams: {
+                            // Make sure to change this to your payment completion page
+                            return_url: "http://localhost:8080/checkout",
+                        },
+                        // redirect:'if_required'
+                    });
+
+                    // This point will only be reached if there is an immediate error when
+                    // confirming the payment. Otherwise, your customer will be redirected to
+                    // your `return_url`. For some payment methods like iDEAL, your customer will
+                    // be redirected to an intermediate site first to authorize the payment, then
+                    // redirected to the `return_url`.
+                    if (error.type === "card_error" || error.type === "validation_error") {
+                        showMessage(error.message);
+                    } else {
+                        showMessage("An unexpected error occurred.");
+                    }
+
+                    setLoading(false);
+                }
+
+                // Fetches the payment intent status after payment submission
+                async function checkStatus() {
+                    const clientSecret = new URLSearchParams(window.location.search).get(
+                        "payment_intent_client_secret"
+                    );
+
+                    if (!clientSecret) {
+                        return;
+                    }
+
+                    const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
+
+                    console.log(paymentIntent);
+
+                    switch (paymentIntent.status) {
+                        case "succeeded":
+                            showMessage("Payment succeeded!");
+                            break;
+                        case "processing":
+                            showMessage("Your payment is processing.");
+                            break;
+                        case "requires_payment_method":
+                            showMessage("Your payment was not successful, please try again.");
+                            break;
+                        default:
+                            showMessage("Something went wrong.");
+                            break;
+                    }
+                }
+
+                // ------- UI helpers -------
+
+                function showMessage(messageText) {
+                    const messageContainer = document.querySelector("#payment-message");
+
+                    messageContainer.classList.remove("hidden");
+                    messageContainer.textContent = messageText;
+
+                    setTimeout(function () {
+                        messageContainer.classList.add("hidden");
+                        messageText.textContent = "";
+                    }, 4000);
+                }
+
+                // Show a spinner on payment submission
+                function setLoading(isLoading) {
+                    if (isLoading) {
+                        // Disable the button and show a spinner
+                        document.querySelector("#submit").disabled = true;
+                        document.querySelector("#spinner").classList.remove("hidden");
+                        document.querySelector("#button-text").classList.add("hidden");
+                    } else {
+                        document.querySelector("#submit").disabled = false;
+                        document.querySelector("#spinner").classList.add("hidden");
+                        document.querySelector("#button-text").classList.remove("hidden");
+                    }
+                }
+
+            }
+            // )
+
+
+
+
+        </script>
+
+</body>
+
+</html>

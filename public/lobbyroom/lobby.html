@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+  <link rel="stylesheet" href="./lobby.css">
+  <link rel="stylesheet" href="../commonFrontEnd/navBar.css">
+
+<body>
+  <div id="header"></div>
+  <script src="/commonFrontEnd/navBar.js"></script>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lobby</title>
+
+  <style>
+
+  </style>
+  </head>
+
+  <body>
+    <img src="lobbybg.jpeg" class="lobbybgimg2" />
+    <img src="lobbybg2.gif" class="lobbybgimg" />
+    <div class="outer">
+      <div id="header"></div>
+      <!-- <script src="/commonFrontEnd/navBar.js"></script> -->
+      <section class="menu-bar">
+        <div class="topnav">
+          <div id="LHS">
+            <a class="active" href="../lobbyroom/lobby.html">Lobby</a>
+            <a href="../deckBuilding/deckBuilding.html">Deck Building</a>
+            <a href="../market/market.html">Market</a>
+          </div>
+
+          <div class="RHS">
+            <a id="logOut" href="/logout">
+              Logout
+            </a>
+          </div>
+        </div>
+
+      </section>
+      <div class="left">
+        <div class="innerleft">
+
+          <h3> Welcome, <span class="currentuser"></span></h3>
+          <div class="secinnerleft">
+            <button type="button" class="createroom">Create room</button>
+            <button type="button" class="createliveroom">Create live room</button>
+          </div>
+        </div>
+        <!-- room at lobby area -->
+        <!-- this is for single room -->
+        <div class="rooms">
+        </div>
+        <div class="liverooms"></div>
+        <div class="watchcommercial"><img class="pointgif" src="commercials/point2.gif">Watch > 5 sec commercials to
+          earn money!
+        </div>
+      </div>
+      <div class="right">
+        <h1> Users</h1>
+        <div class="avilableUsers">
+        </div>
+      </div>
+      <script src="/socket.io/socket.io.js"></script>
+      <script>
+        const socket = io.connect();
+        let onlineusers = document.querySelector(".avilableUsers");
+        let currentuser = document.querySelector('.currentuser');
+        let lobbyrooms = document.querySelector('.rooms')
+        let lobbyliverooms = document.querySelector('.liverooms') //this is to host all rooms at lobby
+        let createroom = document.querySelector('.createroom') //createroombutton //[back here] single button, but can selector or selectorAll
+        let createliveroom = document.querySelector('.createliveroom')
+        let roomName = document.querySelector('[name="rname"]')
+        let watchcommercial = document.querySelector('.watchcommercial')
+        let invitebuttons;
+        let currentuserid;
+
+        let joinliveroom;
+
+
+
+        async function getUserProfile() {
+          console.log('line 349 - gets user profile')
+          let res = await fetch('/me')
+          if (res.ok) {
+            let user = await res.json()
+            currentuser.innerHTML = user.data.username
+            currentuserid = user.data.id
+            console.log('user.data.username - ', user.data.username)
+            console.log('user.data.id-', user.data.id)
+          }
+        }
+
+        //successfully let user x to create room]
+        function createNewRoom(data) {
+          let dataindex = 0
+          lobbyrooms.innerHTML = ''
+          for (let d of data) {
+            if (currentuser.innerHTML == d['host']) {
+              // <p class="host">${roomName.value}</p><br>
+              lobbyrooms.innerHTML += `<div class="myroom"> 
+          <p class="hostarea">
+            <span class="host">${d['host']}</span>'s room
+          </p>
+          <div class="quitroombutton" usn="${d['host']}" id="${currentuserid}">
+            <button type="button" class="quitroom" usn="${d['host']}" id="${currentuserid}">Quit</button>
+          </div>
+        </div>`
+            }
+            else {
+              lobbyrooms.innerHTML += `<div class="singleroom">
+          <p class="hostarea">
+            <span class="host">${d['host']}</span>'s room
+          </p>
+          <div class="quitroombutton" usn="${d['host']}" id="${currentuserid}">
+            <button type="button" class="quitroom" usn="${d['host']}" id="${currentuserid}">Join</button>
+          </div>
+        </div>`
+            }
+            quitroom = document.querySelectorAll(".quitroombutton")
+            console.log('quitrooms', quitroom.length)
+            quitownroom()
+          }
+        }
+
+        // create live room
+        function createNewLiveRoom(data) {
+          let dataindex = 0
+          lobbyliverooms.innerHTML = ''
+          for (let d of data) {
+            lobbyliverooms.innerHTML += `<div class="liveroom"> 
+          <p class="hostarea">
+            <span class="host">${d['host']}</span>'s room
+          </p>
+          <div class="quitliveroombutton" usn="${d['host']}" id="${currentuserid}">
+            <button type="button" class="joinliveroom" usn="${d['host']}" id="${currentuserid}">Join</button>
+            <i class="fa-solid fa-person-simple">${d['joinedperson'].length}</i>
+          </div>
+        </div>`
+          }
+          joinliveroom = document.querySelectorAll('.joinliveroom')
+          console.log('join live rooms - ', joinliveroom)
+          joinintoliveroom()
+        }
+        // join live room
+
+
+
+
+        //lobby rooms created
+        function createRoomEvent() {
+          createroom.addEventListener('click', async () => {
+            console.log('clicked create room, line 395， currentuser - ', currentuser.innerHTML)
+            const respond = await fetch('/createroom', {
+              method: 'POST',
+              body: JSON.stringify({
+                'username': currentuser.innerHTML,
+                'currentuserid': currentuserid
+              }),
+              headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+              }
+            })
+          })
+          createliveroom.addEventListener('click', async function () {
+            console.log(`currentuser ${currentuser.innerHTML} clicked create live room!`)
+            const respond = await fetch('/createliveroom', {
+              method: 'POST'
+            })
+          })
+        }
+
+        //quit or join own room
+        function quitownroom() {
+          for (let q of quitroom) {
+            q.addEventListener('click', async function (e) {
+              let element = e.target
+              let idofuser = element.getAttribute('usn') //username
+              let userid = element.getAttribute('id') //id
+              console.log(`id of user ${idofuser} socketid ${currentuser.innerHTML}`)
+              const respond = await fetch('/deleteroom', {
+                method: 'POST',
+                body: JSON.stringify({
+                  'username': idofuser,
+                  'socketid': currentuser.innerHTML,
+                  'userid': userid,
+                  'currentuserid': currentuserid
+                }),
+                headers: {
+                  'Content-Type': 'application/json; charset=utf-8'
+                }
+              })
+
+            })
+          }
+        }
+
+        // join live room
+        function joinintoliveroom() {
+          for (let j of joinliveroom) {
+            j.addEventListener('click', async function (e) {
+              let element = e.target
+              let idofhost = element.getAttribute('usn')
+              console.log(idofhost, '-idofhost')
+              const respond = await fetch('/otherjoinliveroom', {
+                method: 'POST',
+                body: JSON.stringify({
+                  'hostusn': idofhost,
+                  'currentuser': currentuser.innerHTML
+                }),
+                headers: {
+                  'Content-Type': 'application/json; charset=utf-8'
+                }
+              })
+
+
+            })
+          }
+        }
+
+
+
+        //update online users
+        function updatenewusers(data) {
+          onlineusers.innerHTML = ''
+          for (let d of data) {
+            if (d['username'] == currentuser.innerHTML) {
+              onlineusers.innerHTML += `<div class="eachuser">
+        <p class="onlineusers">User ${d['username']}</p>
+        </div>`
+            } else {
+              onlineusers.innerHTML += `<div class="eachuser">
+        <p class="onlineusers">User ${d['username']}</p>
+        </div>`
+              // invitebuttons = document.querySelectorAll('.invite')
+              // sendnotification()
+            }
+          }
+        }
+        // <button type="button" class="invite" usn="${d['username']}">Invite</button>
+        // function sendnotification() {
+        //   for (let i of invitebuttons) {
+        //     i.addEventListener('click', async function (e) {
+        //       let element = e.target
+        //       let idofuser = element.getAttribute('usn')
+        //       console.log('clicked invite, user id is - ', idofuser)
+        //       const respond = await fetch('/inviteuser', {
+        //         method: 'POST',
+        //         body: JSON.stringify({
+        //           inviteduser: idofuser,
+        //           currentuser: currentuser.innerHTML
+        //         }),
+        //         headers: {
+        //           'Content-Type': 'application/json; charset=utf-8'
+        //         }
+        //       })
+        //     })
+        //   }
+        // }
+
+        function joincommercial() {
+          watchcommercial.addEventListener('click', async function () {
+            await fetch('/jumptocommercial', {
+              method: 'POST',
+              body: JSON.stringify({
+                currentuser: currentuser.innerHTML
+              }),
+              headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+              }
+            })
+          })
+        }
+        joincommercial()
+
+        function setSocketEvent() {
+
+          // jump page
+          socket.on('redirect', function (destination) {
+            window.location.href = destination
+          })
+
+          socket.on('newuser', (data) => { //when new users online
+            updatenewusers(data)
+          })
+          socket.on('userleft', (data) => { //when users left to remove from online users
+            updatenewusers(data)
+          })
+          socket.on('userleft2', (data, livedata) => { //when users left to remove from lobby area
+            createNewRoom(data)
+            createNewLiveRoom(livedata)
+          })
+          socket.on('updatelobbyroom', (data) => {
+            createNewRoom(data)
+          })
+          // update lobby live rooms
+          socket.on('updatelobbyliveroom', (data) => {
+            createNewLiveRoom(data)
+            console.log(data, '-line 304')
+          })
+          socket.on('updatelobbyroomfordelete', (data) => {
+            createNewRoom(data)
+          })
+
+          socket.on('alertUser', (data) => {
+            alert(data);
+          })
+        }
+
+
+
+
+        function init() {
+          getUserProfile()
+          createRoomEvent()
+          setSocketEvent()
+        }
+        init()
+      </script>
+  </body>
+
+</html>

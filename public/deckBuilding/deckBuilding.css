@@ -1,0 +1,420 @@
+body {
+    background-image: url("../assets/deckBuildingWallpaper.jpeg");
+    background-size: cover;
+    position: relative;
+}
+
+/* ================================= Navigation Bar ================================= */
+.topnav {
+    overflow: hidden;
+    background-color: rgb(129, 77, 20);
+}
+
+.topnav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.topnav a.active {
+    background-color: rgb(216, 143, 49);
+    color: black;
+}
+
+.market {
+    width: 100%;
+    height: 500px;
+    background-color: #ddd;
+    opacity: .5;
+    margin-top: 10px;
+}
+
+/* ================================= Top Buttons ================================= */
+.deck-selection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(129, 77, 20);
+    color: white;
+    margin: 10px;
+    padding: 10px
+}
+
+.btn {
+    background-color: rgb(216, 155, 108);
+    /* margin-left: 15px; */
+}
+
+.deckname-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ce {
+    border: rgb(48, 21, 21);
+}
+
+.deck-rename-btn {
+    width: 27px;
+    height: 27px;
+    text-align: center;
+    border: solid white 1px;
+    border-radius: 20%;
+}
+
+.deck-rename-btn:hover {
+    cursor: pointer;
+}
+
+/* ================================= Modal Image ================================= */
+.modal-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    background-color: rgba(26, 26, 26, 0.926);
+}
+
+.modal-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 333px;
+    height: 447px;
+    background-color: transparent;
+}
+
+.modal-image-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-close-btn:hover {
+    cursor: pointer;
+    background-color: aquamarine;
+
+}
+
+
+.luminaire {
+    position: relative;
+    display: inline-block;
+    /* width: 30px;
+    height: 30px; */
+    margin: 50px;
+    background-color: #000;
+    box-shadow: 0 0 20px 7px #f3f8b7, 0 0 56px 31px rgb(202 205 9);
+    transition: box-shadow 4s ease-out;
+    animation: spin 16s linear infinite;
+}
+
+.lumi
+/* ================================= Deck Building Zone ================================= */
+
+
+.deck-builder {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    margin: 10px;
+    padding: 15px;
+}
+
+.deck-choosing-interface {
+    background-image: url(../assets/wallpaper2.jpeg);
+    background-size: cover;
+    position: absolute;
+    background-color: rgb(124, 124, 205);
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.deck-list-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 30%;
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.deck-on-interface {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 240px;
+    margin: 20px;
+    color: #02184c;
+    font-weight: bold;
+    border: #024b4c 2px solid;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 2px 2px 2px 1px rgba(121, 190, 255, 0.818);
+}
+
+.deck-on-interface:hover {
+    cursor: pointer;
+    background-color: rgba(135, 195, 251, 0.803);
+    color: rgb(255, 255, 255);
+    transform: scale(1.1);
+    box-shadow: none;
+
+}
+
+.deck-box-image {
+    width: 50px;
+
+}
+
+.interface-btn-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 70%;
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.zone-header-wrapper {
+    display: flex;
+}
+
+.my-deck-zone-header {
+    background-color: rgb(129, 77, 20);
+    width: 40%;
+    color: white;
+    font-weight: bold;
+    font-size: large;
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+}
+
+.my-inventory-zone-header {
+    background-color: rgb(129, 77, 20);
+    width: 60%;
+    color: white;
+    font-weight: bold;
+    font-size: large;
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+}
+
+.zone-wrapper {
+    display: flex;
+    margin: 0px;
+}
+
+.deck-zone {
+    display: flex;
+    align-items: flex-start;
+    justify-content: left;
+    flex-wrap: wrap;
+    background-color: rgb(255, 255, 255, 0.5);
+    height: 69vh;
+    width: 40%;
+    margin: 10px;
+    text-align: center;
+    overflow-y: auto;
+}
+
+.inventory-zone {
+    display: flex;
+    align-items: flex-start;
+    justify-content: left;
+    flex-wrap: wrap;
+    background-color: rgb(255, 255, 255, 0.5);
+    height: 69vh;
+    width: 60%;
+    margin: 10px;
+    text-align: center;
+    overflow-y: auto;
+
+}
+
+.my-deck-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: auto;
+
+}
+
+.my-inventory-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: auto;
+
+}
+
+.my-deck-card {
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    position: relative;
+}
+
+.my-inventory-card {
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    position: relative;
+
+}
+
+.card {
+    position: relative;
+    height: 130px;
+    width: 90px;
+    background-color: transparent;
+    border: none;
+    margin: 10px;
+    transition: all .2s ease-in-out;
+    border-radius: 0 !important;
+}
+
+.card:hover {
+    transform: scale(1.1);
+
+}
+
+
+.card-image {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 92%;
+    transition: all .2s ease-in-out;
+}
+
+.card-image:hover {
+    cursor: pointer;
+
+}
+
+
+
+.add-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    background-color: rgb(85, 123, 28);
+    color: white;
+    font-weight: bold;
+    top: 0px;
+    right: 0px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.remove-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    background-color: rgb(179, 16, 8);
+    color: white;
+    font-weight: bold;
+    top: 0px;
+    right: 0px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.add-card:hover,
+.remove-card:hover {
+    cursor: pointer;
+    background-color: rgb(7, 192, 192);
+    color: black;
+}
+
+.hide-btn {
+    display: none;
+}
+
+.card-qty {
+    position: absolute;
+    bottom: 1px;
+    right: 8px;
+    height: 29px;
+    border-radius: 20%;
+    background-color: rgb(255, 255, 255, 0.7);
+    padding: 3px;
+    font-weight: bold;
+}
+
+/* Modal Image */
+#modal {
+    display: none;
+}
+
+.modal {
+    margin: auto;
+    padding-top: 5%;
+    width: 50%;
+    height: 80%;
+    z-index: 1;
+}
+
+.modal img {
+    animation-name: zoom;
+    animation-duration: 0.6s;
+    display: block;
+    padding: 10px;
+    margin: auto;
+    max-width: 100%;
+    max-height: 100%;
+    box-shadow: 0 2px 6px rgb(0, 0, 0, 0.2), 0 10px 20px rgb(0, 0, 0, 0.2);
+    border-radius: 12px;
+    border: 1px solid white;
+}
+
+@keyframes zoom {
+    from {
+        transform: scale(0.1)
+    }
+
+    to {
+        transform: scale(1)
+    }
+}
+
+.thum-img {
+    float: left;
+    width: 90px;
+    height: 130px;
+    margin: auto;
+    display: block;
+    padding: 40px;
+}
+
+
+/* ================================= Bottom Buttons ================================= */
+.bottom-btn-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+    padding: 15px;
+}
